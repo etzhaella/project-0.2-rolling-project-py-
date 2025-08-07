@@ -6,9 +6,12 @@ import logging
 import subprocess
 
 ## get user input
+def get_user_input():
+    machine = []
+
 get_user_input = input("do you want to start a new machine? (yes/no): ").strip().lower()
 if get_user_input not in ['yes', 'no']: 
-    print("Invalid input. Please enter 'yes' or 'no'.")
+    
     sys.exit(1) 
 if get_user_input == 'yes':
     machine_name = input("Enter the name of the new machine: ").strip()
@@ -16,17 +19,20 @@ if get_user_input == 'yes':
         print("Machine name cannot be empty.")
         sys.exit(1)
     
-    # Create a new machine directory
-    machine_dir = Path(f"./machines/{machine_name}")
-    machine_dir.mkdir(parents=True, exist_ok=True)
-    
+   
     # Initialize a basic configuration file
     config = {
         "name": machine_name,
-        "status": "new"
+        "os": (enter_os := input("Enter the operating system (e.g., Linux, Windows): ").strip()),
+        "cpu": (enter_cpu := input("enter the cpu usege (e.g., 2 cores): ").strip()),
+        "ram": (enter_ram := input("enter the ram usege (e.g., 4GB): ").strip()),
+        "class": (enter_class := input("enter the class of the machine (e.g., web server, database): ").strip()),
     }
+
     
-    with open(machine_dir / 'config.json', 'w') as f:
+    # Save the configuration to a JSON file
+    config_file = Path(f"{machine_name}_config.json")
+    with config_file.open('w') as f:
         json.dump(config, f, indent=4)
     
-    print(f"New machine '{machine_name}' created successfully.")    
+    print(f"Configuration for {machine_name} saved to {config_file}"   )
